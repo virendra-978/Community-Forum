@@ -7,8 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(
-  "mongodb+srv://virendrat2121_db_user:78BiAqtpVspJkvrj@cluster0.hfgtbie.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
+mongoose.connect("YOUR_MONGO_DB_URI");
 
 const userSchema = new mongoose.Schema({
   username: String,
