@@ -2,12 +2,14 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
+require("dotenv").config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect("YOUR_MONGO_DB_URI");
+uri = process.env.MONGO_DB_URI;
+mongoose.connect(uri);
 
 const userSchema = new mongoose.Schema({
   username: String,
@@ -15,14 +17,13 @@ const userSchema = new mongoose.Schema({
 });
 
 const messageSchema = new mongoose.Schema({
-  user: String, 
+  user: String,
   text: String,
   replies: [{ user: String, text: String }],
 });
 
 const User = mongoose.model("User", userSchema);
 const Message = mongoose.model("Message", messageSchema);
-
 
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
@@ -35,7 +36,6 @@ app.post("/register", async (req, res) => {
   await new User({ username, password: hash }).save();
   res.json({ msg: "Registered" });
 });
-
 
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
@@ -51,12 +51,10 @@ app.post("/login", async (req, res) => {
   res.json({ username });
 });
 
-
 app.get("/messages", async (req, res) => {
   const messages = await Message.find();
   res.json(messages);
 });
-
 
 app.post("/messages", async (req, res) => {
   const { user, text } = req.body;
@@ -67,7 +65,6 @@ app.post("/messages", async (req, res) => {
   await message.save();
   res.json(message);
 });
-
 
 app.post("/messages/:id/reply", async (req, res) => {
   const { user, text } = req.body;
